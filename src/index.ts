@@ -1,17 +1,20 @@
 import express from 'express';
-import models, { connectDb } from './database/index';
-import cors from 'cors'
+import models, { connectDb } from './models/index';
+import ratingRouter from './routes/rating';
+import gameRouter from './routes/game';
+import setupViewsRoutes from './routes';
+import cookieParser from 'cookie-parser';
 const app = express();
 app.use(express.json());
-app.use(cors());
-app.get('/',function(req,res) {
-    res.send('Hello world');
-})
-app.post('/post',function(req,res) {
-    res.send(req.body);
-})
+app.use(express.urlencoded());
+app.use(cookieParser());
+app.use('/games', gameRouter);
+app.use('/ratings', ratingRouter);
+app.set('views', 'src/views');
+app.set('view engine', 'ejs');
+app.use(express.static('src'));
+setupViewsRoutes(app);
+
 connectDb().then(async () => {
-    app.listen(6000, () =>
-      console.log(`Example app listening on port 6000!`),
-    );
-  });
+  app.listen(5000, () => console.log(`Example app listening on port 6000!`));
+});

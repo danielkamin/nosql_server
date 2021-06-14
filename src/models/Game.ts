@@ -11,7 +11,11 @@ const gameSchema = new mongoose.Schema({
   },
   studio: {
     type: String,
-  }
+  },
+  avgRating: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'AvgRating',
+  },
 });
 
 const Game = mongoose.model('Game', gameSchema);
