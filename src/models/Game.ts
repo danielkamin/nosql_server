@@ -12,6 +12,9 @@ const gameSchema = new mongoose.Schema({
   studio: {
     type: String,
   },
+  imageURL: {
+    type: String,
+  },
   avgRating: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'AvgRating',

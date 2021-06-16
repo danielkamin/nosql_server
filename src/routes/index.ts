@@ -1,6 +1,4 @@
 import { Express } from 'express';
-import jwt from 'jsonwebtoken';
-import models from '../models/index';
 import { getGame, getGames, createGame, removeGame, updateGame } from '../controllers/gameController';
 import { addRating, removeRating } from '../controllers/ratingController';
 import { register, login } from '../controllers/userController';
@@ -49,14 +47,16 @@ const setupViewsRoutes = (app: Express) => {
     res.render('game', response);
   });
 
-  app.delete('/gry/:id', validateUser, async (req, res) => {
+  app.get('/gry/:id/usun', validateUser, async (req, res) => {
     const response = await removeGame(req);
-    res.send({ data: response });
+    res.render('delete', { data: response });
   });
+
   app.post('/review/:id/usun', validateUser, async (req, res) => {
     const response = await removeRating(req);
     res.send(response);
   });
+
   app.post('/review', validateUser, async (req, res) => {
     const response = await addRating(req, res);
     res.send(response);
@@ -72,6 +72,7 @@ const setupViewsRoutes = (app: Express) => {
       res.redirect('/gry');
     }
   });
+
   app.post('/register', async (req, res) => {
     const response = await register(req);
     if (response === false) {

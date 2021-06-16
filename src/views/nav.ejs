@@ -20,10 +20,11 @@
     }
 </script>
 <body class="d-flex h-100 text-center text-white bg-dark" >
-    <header class="position-absolute top-0 start-25 vw-100 py-2" >
+    <header class="position-static d-flex py-2 mb-3 py-3" >
         <div class="d-block w-50 mx-auto">
-          <h3 class="float-md-start mb-0">NoSQL</h3>
+          <h3 class="float-md-start mb-0"><a href='/' class="text-decoration-none text-light">NoSQL</a></h3>
           <nav class="nav nav-masthead justify-content-center float-md-end">
+            <a class="nav-link" href="/gry" id="baza">Baza Gier</a>
             <a class="nav-link" href="/login" id="login">Login</a>
             <a class="nav-link" href="/register" id="register">Register</a>
             <a class="nav-link" href="#" onclick="logout()" id="logout">LogOut</a>

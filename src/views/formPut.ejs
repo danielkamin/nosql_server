@@ -8,11 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link href="/css/styles.css" rel="stylesheet">
 </head>
-<body class="d-flex h-100 text-center text-white bg-dark">
+<body class="d-flex text-center text-white bg-dark flex-column">
+    <%- include('nav.ejs') %>
     <main class="cover-container d-flex w-75 h-100 p-3 mx-auto flex-column justify-content-center align-items-center">
-        <%- include('nav.ejs') %>
-        <div class="shadow p-3 bg-dark-secondary w-75">
-            <h4 class="text-center text-danger-secondary">Dodaj nową grę</h4>
+        
+        <div class="shadow p-3 bg-dark-secondary w-75 custom-border">
+            <h3 class="text-center text-light my-2">Dodaj nową grę</h3>
             <h6>Aktualizuj Grę</h6>
             <form  class="p-4 " action='/gry/<%= game._id%>/aktualizuj' method='post'>
                 <div class="mb-3">
@@ -22,6 +23,10 @@
                 <div class="mb-3">
                     <label for="title" class="form-label">Tytuł</label>
                     <input type="text" class="form-control" name="title" required value='<%= game.title%>'>
+                </div>
+                <div class="mb-3">
+                    <label for="imageURL" class="form-label">Link do zdjęcia</label>
+                    <input type="text" class="form-control" name="imageURL" required value='<%= game.imageURL%>'>
                 </div>
                 <div class="mb-3">
                     <label for="studio" class="form-label">Studio</label>

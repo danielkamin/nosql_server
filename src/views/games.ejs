@@ -9,23 +9,10 @@
     <link href="css/styles.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
-<script>
-
-    async function deleteGame(e){
-        await axios.delete('/gry/'+e.target.id).then(res=>{
-            console.log(res)
-            alert('Sukces')
-            window.location.reload();
-        }).catch(err=>{
-            alert(err.toString())
-        })
-        
-    }
-</script>
-<body class="d-flex h-100 text-center text-white bg-dark">
+<body class="d-flex text-center text-white bg-dark flex-column">
+    <%- include('nav.ejs') %>
     <main class="cover-container d-flex w-75 h-100 p-3 mx-auto flex-column justify-content-center align-items-center">
-        <%- include('nav.ejs') %>
-        <div class="shadow p-4 bg-dark bg-secondary bg-dark-secondary">
+        <div class="shadow p-4 bg-dark bg-secondary bg-dark-secondary custom-border">
             <div class="d-flex ">
                 <a class="btn btn-outline-light" href="/gry/dodaj">Dodaj</a>
             </div>
@@ -58,7 +45,7 @@
                                 <%}%>
                             </td>
                             <td>
-                                <span class='text-danger-secondary  span-action'  id='<%= game._id%>' onClick="deleteGame(event)">Usuń</span>
+                                <a class='text-danger-secondary  span-action'  id='<%= game._id%>' href='/gry/<%= game._id%>/usun'>Usuń</a>
                             </td>
                             <td>
                                 <a class='text-action-secondary ' href='/gry/<%= game._id%>/aktualizuj'>Aktualizuj</a>

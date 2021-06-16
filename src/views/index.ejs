@@ -9,10 +9,10 @@
     <link href="css/styles.css" rel="stylesheet">
     <script src="/css/scripts.js"></script>
 </head>
-<body class="d-flex h-100 text-center text-white bg-dark">
+<body class="d-flex text-center text-white bg-dark flex-column">
+    <%- include('nav.ejs') %>
     
     <main class="cover-container d-flex w-75 h-100 p-3 mx-auto flex-column justify-content-center align-items-center">
-        <%- include('nav.ejs') %>
         <div class="">
             <h1 class="">NoSQL CRUD</h1>
             <p class="lead">System oceniania gier komputerowych opartych o bazę danych MongoDB</p>

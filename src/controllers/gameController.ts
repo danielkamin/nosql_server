@@ -8,6 +8,7 @@ export const createGame = async (req: Request) => {
       releaseDate: req.body.releaseDate,
       studio: req.body.studio,
       avgRating: null,
+      imageURL: req.body.imageURL,
     });
     await game.save();
     return game._id;
@@ -27,7 +28,14 @@ export const updateGame = async (req: Request) => {
   try {
     await models.Game.updateOne(
       { _id: req.params.id },
-      { $set: { title: req.body.title, studio: req.body.studio, releaseDate: req.body.releaseDate } }
+      {
+        $set: {
+          title: req.body.title,
+          studio: req.body.studio,
+          releaseDate: req.body.releaseDate,
+          imageURL: req.body.imageURL,
+        },
+      }
     );
     return true;
   } catch (err) {

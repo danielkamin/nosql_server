@@ -4,7 +4,7 @@ import { calcNewAvgRating } from '../helpers/index';
 
 export const addRating = async (req: Request, res: Response) => {
   try {
-    const oldRating = await models.Rating.findOne({ user: req.cookies._id });
+    const oldRating = await models.Rating.findOne({ user: req.cookies._id, gameId: req.body.game });
     if (oldRating !== null) {
       res.status(400).send('Ocena już dodana');
       return;
@@ -12,6 +12,7 @@ export const addRating = async (req: Request, res: Response) => {
     const rating = new models.Rating({
       rating: +req.body.rating,
       gameId: req.body.game,
+      comment: req.body.comment,
       user: req.cookies._id,
     });
     await rating.save();
@@ -27,9 +28,11 @@ export const addRating = async (req: Request, res: Response) => {
       await newAvgRating.save();
       await models.Game.updateOne({ _id: req.body.game }, { $set: { avgRating: newAvgRating._id } });
     } else {
+      let newAvg = calcNewAvgRating(avgRatingObject.avgRating, avgRatingObject.numOfVotes, +req.body.rating, true);
+      let newRatingCount = ++avgRatingObject.numOfVotes;
       await avgRatingObject.updateOne({
-        avgRating: calcNewAvgRating(avgRatingObject.avgRating, avgRatingObject.numOfVotes, +req.body.rating, true),
-        numOfVotes: ++avgRatingObject.numOfVotes,
+        avgRating: newAvg,
+        numOfVotes: newRatingCount,
       });
     }
     return true;
@@ -41,13 +44,15 @@ export const addRating = async (req: Request, res: Response) => {
 export const removeRating = async (req: Request) => {
   try {
     const rating = await models.Rating.findOneAndDelete({ _id: req.params.id });
-    const avgRatingObject = await models.AvgRating.findOne({ gameId: req.body.gameId });
+    const avgRatingObject = await models.AvgRating.findOne({ game: rating.gameId });
     if (avgRatingObject.numOfVotes === 1) {
-      await avgRatingObject.remove();
+      await avgRatingObject.deleteOne();
     } else {
-      await avgRatingObject.update({
-        avgRating: calcNewAvgRating(avgRatingObject.avgRating, avgRatingObject.numOfVotes, rating.rating, false),
-        numOfVotes: --avgRatingObject.numOfVotes,
+      let newAvg = calcNewAvgRating(avgRatingObject.avgRating, avgRatingObject.numOfVotes, rating.rating, false);
+      let newRatingCount = --avgRatingObject.numOfVotes;
+      await avgRatingObject.updateOne({
+        avgRating: newAvg,
+        numOfVotes: newRatingCount,
       });
     }
     return true;

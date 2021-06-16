@@ -19,6 +19,7 @@ export const validateUser = (req: Request, res: Response, next: any) => {
     jwt.verify(req.cookies.token, 'FFFFFF');
     next();
   } catch (err) {
-    return res.status(401).send('Unauthorized');
+    req.flash('error', 'W celu użycia tej opcji proszę się zalogować!');
+    return res.redirect('/login');
   }
 };

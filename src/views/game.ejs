@@ -9,40 +9,27 @@
     <link href="/css/styles.css" rel="stylesheet">
     <script src="/css/scripts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-</head>
-<script>
-    async function addReview(){
-        const data = document.querySelector("#review").value
-        await axios.post('/review',{
-                game:'<%= game._id %>',
-                rating:data
-        }).then(res=>{
-            alert('Dodano ocenę')
-            window.location.reload()
-        }).catch(err=>{
-            alert(err.response.data)
-        })
-    }
-    async function removeReview(_id){
-        await axios.post('/review/'+_id+'/usun').then(res=>{
-            alert('Usunięto ocenę')
-            window.location.reload()
-        }).catch(err=>{
-            alert(err.response.data)
-        })
-    }
-</script>
-<body>
-    <%- include('functions.ejs') %>
-    <body class="d-flex h-100 text-center text-white bg-dark">
+</head>  
+    <body class="d-flex text-center text-white bg-dark flex-column">
+        <%- include('functions.ejs') %>
+        <%- include('nav.ejs') %>
         <main class="cover-container d-flex w-75 h-100 p-3 mx-auto flex-column justify-content-center align-items-center">
-            <%- include('nav.ejs') %>
-            <div class="shadow p-3 bg-dark-secondary w-50">
-                <div class="mb-5 mt-2">
+            
+            <div class="shadow py-3 px-5 bg-dark-secondary w-50 custom-border">
+                <div class='mb-5 mt-2 d-flex justify-content-between'>
+                <div class="">
                     <h2><%= game.title %></h2>
                     <p class="lead"><%= game.studio %></p>
                 </div> 
-                <div class='d-flex flex-column align-items-start'>
+                <div class="custom-image-container">
+                <%if(game.imageURL){%>
+                    <img class="img-thumbnail custom-image" alt="Zdjęcie gry" src="<%= game.imageURL %>">
+                <%}else{%>
+                    <img class="img-thumbnail custom-image" alt="Zdjęcie gry" src="/css/not-found.webp">
+                <%}%>
+                </div>
+            </div>
+                <div class='d-flex flex-column align-items-center '>
                     <p class="">Data Premiery: <span class="text-action-secondary"><%= new Date(game.releaseDate).toLocaleDateString()%> </span></p>
                     <p class="">Średnia Ocena: 
                         <span  class="text-action-secondary">
@@ -55,24 +42,86 @@
                     </p>
                 </div>
             </div>
-            <div class="d-block w-25 text-center my-3">
-                <label for="review" class="form-label">Ocena Gry</label>
-                <input class="form-control bg-light w-50 mx-auto text-dark" type='number' min="0" max="10" id="review" name="review">
-                <button onclick="addReview()" class="btn btn-light my-2">Dodaj</button>
+            <div>
+                <button class="btn btn-light my-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Pokaż / Ukryj formularz
+                  </button>
             </div>
-            <div class="">
+            <div class="collapse w-75" id="collapseExample">
+                <div class="d-block w-100 bg-dark-secondary  my-4 p-4 shadow" >
+                    <div class="">
+                        <div>
+                            <div class="text-start">
+                                <label for="comment" class="form-label">Opcjonalny komentarz</label>
+                                <textarea class="form-control" placeholder="Zostaw komentarz..." id="comment" style="height: 100px"></textarea>
+                              </div>
+                        </div>
+                        <div class="d-flex align-items-end my-3 ">
+                            <div class="text-start">
+                                <label for="review" class="form-label">Ocena Gry</label>
+                                <select name="review" id="review">
+                                    <option value="10">10</option> 
+                                    <option value="9">9</option> 
+                                    <option value="8">8</option> 
+                                    <option value="7">7</option> 
+                                    <option value="6">6</option> 
+                                    <option value="5">5</option>                         
+                                    <option value="4">4</option>           
+                                    <option value="3">3</option>
+                                    <option value="2">2</option>
+                                    <option value="1">1</option>
+                                </select>   
+                            </div>
+                            <button onclick="addReview()" class="btn ms-auto btn-outline-light">Dodaj</button>
+                        </div>
+                    </div>      
+                </div>
+            </div>
+            <div class="w-100">
                 <% ratings.forEach(function(rating){%>
-                    <div class="d-flex p-4 align-items-center">
-                        <p class="fw-bold lead mx-2"><%= rating.rating%></p>
-                        <p class="mx-2"><%= rating.user.userName%></p>
-                        <%if(rating.user._id == cookie){%>
-                        <p class="text-danger-secondary fw-bold mx-2" onclick="removeReview('<%=rating._id%>')">X</p>    
-                        <%}%>
+                    <div class="d-flex p-4 align-items-center w-75 mx-auto bg-dark-secondary shadow my-3">
+                        <div class="d-flex flex-column align-items-start">
+                            <p class="fw-bold lead "><%= rating.comment%></p>
+                            <p class="">Użytkownik: <%= rating.user.userName%></p>
+                        </div>
+                        <div class=" ms-auto">
+                            <p class="lead  fw-bold">Ocena: <span class="text-action-secondary"><%= rating.rating%></span></p>
+                            <%if(rating.user._id == cookie){%>
+                                <button class="btn-close bg-secondary-danger mb-3" onclick="removeReview('<%=rating._id%>')"></button>    
+                            <%}%>
+                        </div>
+                       
                     </div>                  
                 <%});%>
             </div>
         </main>
-    </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script>
+        async function addReview(){
+            let rating = document.querySelector("#review").value
+            let comment = document.querySelector('#comment').value
+            if(comment==='') comment='Nie pozostawiono komentarza...'
+            await axios.post('/review',{
+                    game:'<%= game._id %>',
+                    rating:+rating,
+                    comment:comment
+            }).then(res=>{
+                alert('Dodano ocenę')
+                window.location.reload()
+            }).catch(err=>{
+                alert(err.response.data)
+            })
+        }
+        async function removeReview(_id){
+            await axios.post('/review/'+_id+'/usun').then(res=>{
+                alert('Usunięto ocenę')
+                window.location.reload()
+            }).catch(err=>{
+                alert(err.response.data)
+            })
+        }
+    
+    </script>
 </body>
 </html>
 
